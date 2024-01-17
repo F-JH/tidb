@@ -8615,9 +8615,9 @@ CastType:
 		tp.AddFlag(mysql.BinaryFlag)
 		$$ = tp
 	}
-|	Char OptFieldLen OptBinary "VARCHAR"
+|	Char OptFieldLen OptBinary
 	{
-		tp := types.NewFieldType(mysql.TypeVarString)
+		tp := types.NewFieldType(mysql.TypeString)
 		tp.SetFlen($2.(int)) // TODO: Flen should be the flen of expression
 		tp.SetCharset($3.(*ast.OptBinary).Charset)
 		if $3.(*ast.OptBinary).IsBinary {
@@ -8638,6 +8638,29 @@ CastType:
 		}
 		$$ = tp
 	}
+|   "VARCHAR" OptFieldLen OptBinary
+    {
+        tp := types.NewFieldType(mysql.TypeVarString)
+        tp.SetFlen($2.(int)) // TODO: Flen should be the flen of expression
+        tp.SetCharset($3.(*ast.OptBinary).Charset)
+        if $3.(*ast.OptBinary).IsBinary {
+            tp.AddFlag(mysql.BinaryFlag)
+            tp.SetCharset(charset.CharsetBin)
+            tp.SetCollate(charset.CollationBin)
+        } else if tp.GetCharset() != "" {
+            co, err := charset.GetDefaultCollation(tp.GetCharset())
+            if err != nil {
+                yylex.AppendError(yylex.Errorf("Get collation error for charset: %s", tp.GetCharset()))
+                return 1
+            }
+            tp.SetCollate(co)
+            parser.explicitCharset = true
+        } else {
+            tp.SetCharset(parser.charset)
+            tp.SetCollate(parser.collation)
+        }
+        $$ = tp
+    }
 |	"DATE"
 	{
 		tp := types.NewFieldType(mysql.TypeDate)
