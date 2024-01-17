@@ -531,11 +531,13 @@ func (ft *FieldType) Restore(ctx *format.RestoreCtx) error {
 // RestoreAsCastType is used for write AST back to string.
 func (ft *FieldType) RestoreAsCastType(ctx *format.RestoreCtx, explicitCharset bool) {
 	switch ft.tp {
-	case mysql.TypeVarString, mysql.TypeString:
+	case mysql.TypeVarString, mysql.TypeString, mysql.TypeVarchar:
 		skipWriteBinary := false
 		if ft.charset == charset.CharsetBin && ft.collate == charset.CollationBin {
 			ctx.WriteKeyWord("BINARY")
 			skipWriteBinary = true
+		} else if ft.tp == mysql.TypeVarchar {
+			ctx.WriteKeyWord("VARCHAR")
 		} else {
 			ctx.WriteKeyWord("CHAR")
 		}
