@@ -8617,7 +8617,7 @@ CastType:
 	}
 |	Char OptFieldLen OptBinary
 	{
-		tp := types.NewFieldType(mysql.TypeString)
+		tp := types.NewFieldType(mysql.TypeVarString)
 		tp.SetFlen($2.(int)) // TODO: Flen should be the flen of expression
 		tp.SetCharset($3.(*ast.OptBinary).Charset)
 		if $3.(*ast.OptBinary).IsBinary {
@@ -8640,7 +8640,7 @@ CastType:
 	}
 |   "VARCHAR" OptFieldLen OptBinary
     {
-        tp := types.NewFieldType(mysql.TypeVarString)
+        tp := types.NewFieldType(mysql.TypeVarchar)
         tp.SetFlen($2.(int)) // TODO: Flen should be the flen of expression
         tp.SetCharset($3.(*ast.OptBinary).Charset)
         if $3.(*ast.OptBinary).IsBinary {
