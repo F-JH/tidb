@@ -8615,7 +8615,7 @@ CastType:
 		tp.AddFlag(mysql.BinaryFlag)
 		$$ = tp
 	}
-|	Char OptFieldLen OptBinary
+|	Char OptFieldLen OptBinary "VARCHAR"
 	{
 		tp := types.NewFieldType(mysql.TypeVarString)
 		tp.SetFlen($2.(int)) // TODO: Flen should be the flen of expression
