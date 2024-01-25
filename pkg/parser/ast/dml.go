@@ -170,15 +170,15 @@ func (n *Join) Restore(ctx *format.RestoreCtx) error {
 		}
 	}
 
-	if leftIsJoin && !useCommaJoin {
-		ctx.WritePlain("(")
-	}
+	//if leftIsJoin && !useCommaJoin {
+	//	ctx.WritePlain("(")
+	//}
 	if err := n.Left.Restore(ctx); err != nil {
 		return errors.Annotate(err, "An error occurred while restore Join.Left")
 	}
-	if leftIsJoin && !useCommaJoin {
-		ctx.WritePlain(")")
-	}
+	//if leftIsJoin && !useCommaJoin {
+	//	ctx.WritePlain(")")
+	//}
 	if n.Right == nil {
 		return nil
 	}
