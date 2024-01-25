@@ -568,6 +568,13 @@ func (ft *FieldType) RestoreAsCastType(ctx *format.RestoreCtx, explicitCharset b
 		} else if ft.flen > 0 {
 			ctx.WritePlainf("(%d)", ft.flen)
 		}
+	case mysql.TypeNewDecimal128:
+		ctx.WriteKeyWord("DECIMAL128")
+		if ft.flen > 0 && ft.decimal > 0 {
+			ctx.WritePlainf("(%d, %d)", ft.flen, ft.decimal)
+		} else if ft.flen > 0 {
+			ctx.WritePlainf("(%d)", ft.flen)
+		}
 	case mysql.TypeDuration:
 		ctx.WriteKeyWord("TIME")
 		if ft.decimal > 0 {

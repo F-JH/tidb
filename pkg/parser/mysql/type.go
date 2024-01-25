@@ -34,17 +34,18 @@ const (
 	TypeVarchar  byte = 15
 	TypeBit      byte = 16
 
-	TypeJSON       byte = 0xf5
-	TypeNewDecimal byte = 0xf6
-	TypeEnum       byte = 0xf7
-	TypeSet        byte = 0xf8
-	TypeTinyBlob   byte = 0xf9
-	TypeMediumBlob byte = 0xfa
-	TypeLongBlob   byte = 0xfb
-	TypeBlob       byte = 0xfc
-	TypeVarString  byte = 0xfd
-	TypeString     byte = 0xfe /* TypeString is char type */
-	TypeGeometry   byte = 0xff
+	TypeNewDecimal128 byte = 0xf4
+	TypeJSON          byte = 0xf5
+	TypeNewDecimal    byte = 0xf6
+	TypeEnum          byte = 0xf7
+	TypeSet           byte = 0xf8
+	TypeTinyBlob      byte = 0xf9
+	TypeMediumBlob    byte = 0xfa
+	TypeLongBlob      byte = 0xfb
+	TypeBlob          byte = 0xfc
+	TypeVarString     byte = 0xfd
+	TypeString        byte = 0xfe /* TypeString is char type */
+	TypeGeometry      byte = 0xff
 )
 
 // Flag information.

@@ -119,6 +119,7 @@ import (
 	dayMinute         "DAY_MINUTE"
 	daySecond         "DAY_SECOND"
 	decimalType       "DECIMAL"
+	decimal128Type    "DECIMAL128"
 	defaultKwd        "DEFAULT"
 	delayed           "DELAYED"
 	deleteKwd         "DELETE"
@@ -8730,6 +8731,17 @@ CastType:
 	{
 		fopt := $2.(*ast.FloatOpt)
 		tp := types.NewFieldType(mysql.TypeNewDecimal)
+		tp.SetFlen(fopt.Flen)
+		tp.SetDecimal(fopt.Decimal)
+		tp.SetCharset(charset.CharsetBin)
+		tp.SetCollate(charset.CollationBin)
+		tp.AddFlag(mysql.BinaryFlag)
+		$$ = tp
+	}
+|	"DECIMAL128" FloatOpt
+	{
+		fopt := $2.(*ast.FloatOpt)
+		tp := types.NewFieldType(mysql.TypeNewDecimal128)
 		tp.SetFlen(fopt.Flen)
 		tp.SetDecimal(fopt.Decimal)
 		tp.SetCharset(charset.CharsetBin)

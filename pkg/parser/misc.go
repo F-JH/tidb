@@ -312,6 +312,7 @@ var tokenMap = map[string]int{
 	"DEALLOCATE":               deallocate,
 	"DEC":                      decimalType,
 	"DECIMAL":                  decimalType,
+	"DECIMAL128":               decimal128Type,
 	"DECLARE":                  declare,
 	"DEFAULT":                  defaultKwd,
 	"DEFINED":                  defined,
