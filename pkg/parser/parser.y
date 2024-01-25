@@ -299,6 +299,7 @@ import (
 	varbinaryType     "VARBINARY"
 	varcharType       "VARCHAR"
 	varcharacter      "VARCHARACTER"
+	stringType        "STRING"
 	varying           "VARYING"
 	virtual           "VIRTUAL"
 	when              "WHEN"
@@ -8672,6 +8673,29 @@ CastType:
         }
         $$ = tp
     }
+|	"STRING" OptBinary
+	{
+            tp := types.NewFieldType(mysql.TypeVarchar)
+            tp.SetFlen(65533) // TODO: Flen should be the flen of expression
+            tp.SetCharset($2.(*ast.OptBinary).Charset)
+            if $2.(*ast.OptBinary).IsBinary {
+                tp.AddFlag(mysql.BinaryFlag)
+                tp.SetCharset(charset.CharsetBin)
+                tp.SetCollate(charset.CollationBin)
+            } else if tp.GetCharset() != "" {
+                co, err := charset.GetDefaultCollation(tp.GetCharset())
+                if err != nil {
+                    yylex.AppendError(yylex.Errorf("Get collation error for charset: %s", tp.GetCharset()))
+                    return 1
+                }
+                tp.SetCollate(co)
+                parser.explicitCharset = true
+            } else {
+                tp.SetCharset(parser.charset)
+                tp.SetCollate(parser.collation)
+            }
+            $$ = tp
+	}
 |	"DATE"
 	{
 		tp := types.NewFieldType(mysql.TypeDate)
@@ -8729,7 +8753,7 @@ CastType:
 	}
 |	"SIGNED" OptInteger
 	{
-		tp := types.NewFieldType(mysql.TypeLonglong)
+		tp := types.NewFieldType(mysql.TypeLong)
 		tp.SetCharset(charset.CharsetBin)
 		tp.SetCollate(charset.CollationBin)
 		tp.AddFlag(mysql.BinaryFlag)
@@ -8737,13 +8761,21 @@ CastType:
 	}
 |	"UNSIGNED" OptInteger
 	{
-		tp := types.NewFieldType(mysql.TypeLonglong)
+		tp := types.NewFieldType(mysql.TypeLong)
 		tp.AddFlag(mysql.UnsignedFlag | mysql.BinaryFlag)
 		tp.SetCharset(charset.CharsetBin)
 		tp.SetCollate(charset.CollationBin)
 		$$ = tp
 	}
 |	OptInteger
+	{
+		tp := types.NewFieldType(mysql.TypeLong)
+		tp.SetCharset(charset.CharsetBin)
+		tp.SetCollate(charset.CollationBin)
+		tp.AddFlag(mysql.BinaryFlag)
+		$$ = tp
+	}
+|	"BIGINT"
 	{
 		tp := types.NewFieldType(mysql.TypeLonglong)
 		tp.SetCharset(charset.CharsetBin)
@@ -12750,7 +12782,6 @@ OptInteger:
 	{}
 |	"INTEGER"
 |	"INT"
-|	"BIGINT"
 
 FixedPointType:
 	"DECIMAL"
