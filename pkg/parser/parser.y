@@ -7994,6 +7994,17 @@ FunctionCallNonKeyword:
 			},
 		}
 	}
+|	FunctionNameDateArith '(' Expression ',' Expression ')'
+	{
+		$$ = &ast.FuncCallExpr{
+			FnName: model.NewCIStr($1),
+			Args: []ast.ExprNode{
+				$3,
+				$5,
+				&ast.TimeUnitExpr{Unit: ast.TimeUnitDay},
+			},
+		}
+	}
 |	FunctionNameDateArith '(' Expression ',' "INTERVAL" Expression TimeUnit ')'
 	{
 		$$ = &ast.FuncCallExpr{
@@ -8730,6 +8741,14 @@ CastType:
 		tp.AddFlag(mysql.UnsignedFlag | mysql.BinaryFlag)
 		tp.SetCharset(charset.CharsetBin)
 		tp.SetCollate(charset.CollationBin)
+		$$ = tp
+	}
+|	OptInteger
+	{
+		tp := types.NewFieldType(mysql.TypeLonglong)
+		tp.SetCharset(charset.CharsetBin)
+		tp.SetCollate(charset.CollationBin)
+		tp.AddFlag(mysql.BinaryFlag)
 		$$ = tp
 	}
 |	"JSON"
@@ -12731,6 +12750,7 @@ OptInteger:
 	{}
 |	"INTEGER"
 |	"INT"
+|	"BIGINT"
 
 FixedPointType:
 	"DECIMAL"
