@@ -68,6 +68,7 @@ const (
 	LeftJoin
 	// RightJoin is right Join type.
 	RightJoin
+	FullJoin
 )
 
 // Join represents table join.
@@ -87,7 +88,9 @@ type Join struct {
 	// NaturalJoin represents join is natural join.
 	NaturalJoin bool
 	// StraightJoin represents a straight join.
-	StraightJoin   bool
+	StraightJoin bool
+	// OuterJoin represents as outer join
+	OuterJoin      bool
 	ExplicitParens bool
 }
 
@@ -190,6 +193,11 @@ func (n *Join) Restore(ctx *format.RestoreCtx) error {
 		ctx.WriteKeyWord(" LEFT")
 	case RightJoin:
 		ctx.WriteKeyWord(" RIGHT")
+	case FullJoin:
+		ctx.WriteKeyWord(" FULL")
+	}
+	if n.OuterJoin {
+		ctx.WriteKeyWord(" OUTER")
 	}
 	if n.StraightJoin {
 		ctx.WriteKeyWord(" STRAIGHT_JOIN ")

@@ -9860,11 +9860,16 @@ JoinTable:
 |	TableRef JoinType OuterOpt "JOIN" TableRef "ON" Expression
 	{
 		on := &ast.OnCondition{Expr: $7}
-		$$ = &ast.Join{Left: $1.(ast.ResultSetNode), Right: $5.(ast.ResultSetNode), Tp: $2.(ast.JoinType), On: on}
+		$$ = &ast.Join{Left: $1.(ast.ResultSetNode), Right: $5.(ast.ResultSetNode), Tp: $2.(ast.JoinType), On: on, OuterJoin: true}
+	}
+|	TableRef "FULL" OuterOpt "JOIN" TableRef "ON" Expression
+	{
+		on := &ast.OnCondition{Expr: $7}
+		$$ = &ast.Join{Left: $1.(ast.ResultSetNode), Right: $5.(ast.ResultSetNode), Tp: ast.FullJoin, On: on, OuterJoin: true}
 	}
 |	TableRef JoinType OuterOpt "JOIN" TableRef "USING" '(' ColumnNameList ')'
 	{
-		$$ = &ast.Join{Left: $1.(ast.ResultSetNode), Right: $5.(ast.ResultSetNode), Tp: $2.(ast.JoinType), Using: $8.([]*ast.ColumnName)}
+		$$ = &ast.Join{Left: $1.(ast.ResultSetNode), Right: $5.(ast.ResultSetNode), Tp: $2.(ast.JoinType), Using: $8.([]*ast.ColumnName), OuterJoin: true}
 	}
 |	TableRef "NATURAL" "JOIN" TableRef
 	{
@@ -9872,7 +9877,7 @@ JoinTable:
 	}
 |	TableRef "NATURAL" JoinType OuterOpt "JOIN" TableRef
 	{
-		$$ = &ast.Join{Left: $1.(ast.ResultSetNode), Right: $6.(ast.ResultSetNode), Tp: $3.(ast.JoinType), NaturalJoin: true}
+		$$ = &ast.Join{Left: $1.(ast.ResultSetNode), Right: $6.(ast.ResultSetNode), Tp: $3.(ast.JoinType), NaturalJoin: true, OuterJoin: true}
 	}
 |	TableRef "STRAIGHT_JOIN" TableRef
 	{
